@@ -1,0 +1,75 @@
+{% extends "layouts/base_layout.html" %}
+
+{% block main %}
+    <section class="container">
+        <script>NullClick()</script>
+        <div class="row justify-content-md-center mb-3">
+            <a href="/task" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Добавить задачу</a>
+        </div>
+        <div class="d-flex">
+
+            <div class align=center="input-group mb-3 ml-3 col-xl-6">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Имя задачи:</span>
+                </div>
+                <input type="text" name="filterName" class="form-control" id="filterName">
+                <div class="input-group-append">
+                    <button class="btn btn-info" onclick="FilterByName()">Фильтровать</button>
+                </div>
+            </div>
+{#            <div class="ml-3">#}
+{#                <label class="d-inline-block" for="filterName">Имя задачи:</label>#}
+{#            </div>#}
+            <div class="custom-control mb-2 custom-checkbox ml-auto" onchange="transformTaskList()">
+                <input class="custom-control-input" type="checkbox" name="flexCheck" id="onlyDone">
+                <label class="custom-control-label" for="onlyDone">Только невыполненные задачи</label>
+            </div>
+
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="accordion col-12" id="accordionExample">
+            {% for task in tasks %}
+              <div class="card" id="card_{{ task.id }}">
+              <script>removeLoadIcon()</script>
+                <div class="card-header">
+                  <h5 class="mb-0">
+                      {% if not task.condition %}
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <a href="/tasks/{{ task.id }}" class="btn btn-link" role="button" aria-pressed="true" id="task_title_{{task.id }}">{{task.title}}</a>
+                        </button>
+                        <button class="btn btn-danger float-right ml-3" type="button" onclick="removeTask({{task.id}})">
+                            Удалить
+                        </button>
+                        <button type="button" class="btn float-right btn-outline-secondary" onclick="doneTask({{task.id}})" id="done_button_{{task.id}}">
+                            Выполнено
+                        </button>
+                      {% else %}
+                          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <a href="/tasks/{{ task.id }}" class="btn btn-link disabled" role="button" aria-pressed="true" id="task_title_{{ task.id }}"><del id="del_title_{{ task.id }}">{{task.title}}</del></a>
+                        </button>
+                        <button class="btn btn-danger float-right ml-3" type="button" onclick="removeTask({{ task.id }})">
+                            Удалить
+                        </button>
+                        <button type="button" class="btn float-right btn-secondary" onclick="doneTask({{ task.id }})" id="done_button_{{ task.id }}">
+                            Выполнено
+                        </button>
+                      {% endif %}
+                  </h5>
+                </div>
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                  <div class="card-body" id="task_description_{{ task.id }}">
+                      {% if not task.condition %}
+                        <p>{{task.description}}</p>
+                      {% else %}
+                          <del id="del_descr_{{ task.id }}"><p>{{task.description}}</p></del>
+                      {% endif %}
+                  </div>
+                </div>
+              </div>
+                <div class="spinner-border text-primary" role="status" id="spinner_loading"></div>
+            {% endfor %}
+            <script>removeLoadIcon()</script>
+        </div>
+        </div>
+    </section>
+{% endblock %}
